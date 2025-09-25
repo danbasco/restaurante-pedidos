@@ -2,6 +2,8 @@ package core.ports.in;
 
 import core.domain.Pedido;
 
+import java.util.UUID;
+
 public interface PedidoPort {
 
     enum Status {
@@ -9,9 +11,9 @@ public interface PedidoPort {
         ENTREGANDO, ENTREGUE, CANCELADO
     }
 
-    public boolean criarPedido(Pedido pedido);
-    public boolean atualizarPedido(Pedido pedido);
-    public Status consultarStatusPedido(Pedido pedido);
-    public boolean cancelarPedido(Pedido pedido);
+    public Pedido criarPedido(Pedido pedido);
+    public boolean atualizarPedido(UUID pedidoId, Pedido pedidoAtualizado);
+    public Status consultarStatusPedido(UUID pedidoId);
+    public boolean cancelarPedido(UUID pedidoId);
 
 }
