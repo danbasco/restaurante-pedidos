@@ -1,50 +1,38 @@
 package adapters.inbound;
 
-import core.domain.Cliente;
-import core.domain.Endereco;
-import core.domain.ItemPedido;
-import core.domain.Pedido;
-import core.domain.Produto;
-import core.ports.inbound.PedidoPort;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import adapters.inbound.RestauranteCLI;
+import adapters.outbound.MockNotificacaoAdapter;
+import adapters.outbound.MockPagamentoAdapter;
+import adapters.outbound.ClienteRepositorioEmMemoriaAdapter;
+import adapters.outbound.PedidoRepositorioEmMemoriaAdapter;
+import adapters.outbound.ProdutoRepositorioEmMemoriaAdapter;
+import core.ports.outbound.PedidoRepositorioPort;
+import core.services.ClienteService;
+import core.services.EnderecoService;
+import core.services.PedidoService;
+import core.services.ProdutoService;
 
 public class RestauranteApp {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        System.out.println("Iniciando a aplicação Restaurante...");
 
-        // Exemplo de uso das classes e interfaces
-        System.out.println("--- Exemplo de Uso ---");
+        // Criação dos adaptadores de saída (Driven Adapters)
+        ClienteRepositorioEmMemoriaAdapter clienteRepoAdapter = new ClienteRepositorioEmMemoriaAdapter();
+        ProdutoRepositorioEmMemoriaAdapter produtoRepoAdapter = new ProdutoRepositorioEmMemoriaAdapter();
+        PedidoRepositorioEmMemoriaAdapter pedidoRepoAdapter = new PedidoRepositorioEmMemoriaAdapter();
+        MockPagamentoAdapter pagamentoAdapter = new MockPagamentoAdapter();
+        MockNotificacaoAdapter notificacaoAdapter = new MockNotificacaoAdapter();
 
-        // Criando alguns produtos
-        Produto produto1 = new Produto(1, "Pizza Margherita", 45.0f);
-        Produto produto2 = new Produto(2, "Lasanha de Carne", 55.0f);
+        // Criação dos serviços (núcleo da aplicação), injetando as dependências
+        ClienteService clienteService = new ClienteService(clienteRepoAdapter, notificacaoAdapter);
+        ProdutoService produtoService = new ProdutoService(produtoRepoAdapter);
+        PedidoService pedidoService = new PedidoService((PedidoRepositorioPort) pedidoRepoAdapter, pagamentoAdapter, notificacaoAdapter);
+        EnderecoService enderecoService = new EnderecoService(clienteRepoAdapter, notificacaoAdapter);
 
-        // Criando um cliente
-        Endereco enderecoCliente = new Endereco(12345678, "Rua das Flores", 100, "Apartamento 501");
-        Cliente cliente = new Cliente(101, "João Silva", "joao.silva@email.com", enderecoCliente);
+        // Criação do adaptador de entrada (Driving Adapter), injetando os serviços
+        RestauranteCLI cli = new RestauranteCLI(clienteService, produtoService, pedidoService, enderecoService);
 
-        // Criando itens do pedido
-        List<ItemPedido> itensDoPedido = new ArrayList<>();
-        itensDoPedido.add(new ItemPedido(produto1, 2));
-        itensDoPedido.add(new ItemPedido(produto2, 1));
-
-        // Criando um pedido
-        Pedido pedido = new Pedido(
-                1,
-                cliente,
-                itensDoPedido,
-                PedidoPort.Status.AGUARDANDO,
-                LocalDateTime.now(),
-                LocalDateTime.now()
-        );
-
-        System.out.println("Pedido criado com sucesso!");
-        System.out.println("ID do Pedido: " + pedido.getId());
-        System.out.println("Cliente: " + pedido.getCliente().getNome());
-        System.out.println("Status: " + pedido.getStatus());
-        System.out.println("Valor Total: R$" + String.format("%.2f", pedido.getTotal()));
+        // Inicia a interface de linha de comando
+        cli.iniciar();
     }
 }

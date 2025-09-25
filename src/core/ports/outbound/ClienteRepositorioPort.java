@@ -11,6 +11,6 @@ public interface ClienteRepositorioPort {
     public boolean atualizar(Cliente cliente);
 
     // retorna se houve ou nao sucesso ao atualizar o cliente no DB
-    public Optional<Cliente> buscarPorId(long idCliente);
+    public Cliente buscarPorId(long idCliente);
 
 }

@@ -8,13 +8,13 @@ public class Pagamento {
     private UUID id;
     private String status;
     private Pedido pedido;
-    private BigDecimal valor;
+    private float valor;
 
     // Construtores
     public Pagamento(Pedido pedido) {
         this.id = UUID.randomUUID();
         this.pedido = pedido;
-        this.valor = pedido.getValorTotal();
+        this.valor = pedido.getTotal();
         this.status = "PENDENTE";
     }
 
@@ -35,7 +35,7 @@ public class Pagamento {
         return pedido;
     }
 
-    public BigDecimal getValor() {
+    public float getValor() {
         return valor;
     }
 
