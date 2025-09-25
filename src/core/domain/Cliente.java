@@ -1,24 +1,23 @@
 package core.domain;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
-// A classe Cliente é uma entidade de domínio que representa o usuário do sistema.
-// Ela não tem dependências de frameworks ou tecnologias externas.
 public class Cliente {
 
-    private UUID id;
+    private long id;
     private String nome;
     private String email;
+    private Endereco endereco;
 
-    // Construtor
-    public Cliente(String nome, String email) {
-        this.id = UUID.randomUUID();
+    public Cliente(long id, String nome, String email, Endereco endereco) {
+        this.id = id;
         this.nome = nome;
         this.email = email;
+        this.endereco = endereco;
     }
 
-    // Getters
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
@@ -30,12 +29,23 @@ public class Cliente {
         return email;
     }
 
-    // Setters para os casos de uso de atualização
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public void setNome(String nome) {
         this.nome = nome;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
     }
 }

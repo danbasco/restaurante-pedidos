@@ -1,9 +1,9 @@
 package core.services;
 
 import core.domain.Pedido;
-import core.ports.in.PedidoPort;
-import core.ports.out.PagamentoGatewayPort;
-import core.ports.out.PedidoRepositorioPort;
+import core.ports.inbound.PedidoPort;
+import core.ports.outbound.PagamentoGatewayPort;
+import core.ports.outbound.PedidoRepositorioPort;
 
 import java.util.UUID;
 

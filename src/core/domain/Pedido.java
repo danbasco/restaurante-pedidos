@@ -1,76 +1,80 @@
 package core.domain;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
+import core.ports.inbound.PedidoPort;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
-// A classe Pedido é uma entidade de domínio.
-// Ela não tem dependências de frameworks ou tecnologias externas.
 public class Pedido {
 
-    private UUID id;
+    private long id;
+    private Cliente cliente;
     private List<ItemPedido> itens;
-    private Pagamento pagamento;
-    private String status;
-    private BigDecimal valorTotal;
+    private PedidoPort.Status status;
+    private LocalDateTime dataCriacao;
+    private LocalDateTime dataAtualizacao;
 
-    // Construtor
-    public Pedido() {
-        this.id = UUID.randomUUID();
-        this.itens = new ArrayList<>();
-        this.status = "CRIADO";
-        this.valorTotal = BigDecimal.ZERO;
+    public Pedido(long id, Cliente cliente, List<ItemPedido> itens, PedidoPort.Status status, LocalDateTime dataCriacao, LocalDateTime dataAtualizacao) {
+        this.id = id;
+        this.cliente = cliente;
+        this.itens = itens;
+        this.status = status;
+        this.dataCriacao = dataCriacao;
+        this.dataAtualizacao = dataAtualizacao;
     }
 
-    // Métodos de comportamento (Lógica de negócio)
-    // Conforme o documento, a lógica de calcular o total fica no núcleo.
-    public void calcularTotal() {
-        this.valorTotal = BigDecimal.ZERO;
-        for (ItemPedido item : this.itens) {
-            this.valorTotal = this.valorTotal.add(item.getValorTotal());
-        }
-    }
-
-    // Conforme o documento, a lógica de alterar o status do pedido também fica no núcleo.
-    public void alterarStatus(String novoStatus) {
-        this.status = novoStatus;
-    }
-
-    // Métodos para adicionar/remover itens, conforme o documento[cite: 39, 40].
-    public void adicionarItem(ItemPedido item) {
-        this.itens.add(item);
-        this.calcularTotal(); // Recalcula o total ao adicionar um item
-    }
-
-    public void removerItem(ItemPedido item) {
-        this.itens.remove(item);
-        this.calcularTotal(); // Recalcula o total ao remover um item
-    }
-
-    // Getters
-    public UUID getId() {
+    public long getId() {
         return id;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
     }
 
     public List<ItemPedido> getItens() {
         return itens;
     }
 
-    public String getStatus() {
+    public PedidoPort.Status getStatus() {
         return status;
     }
 
-    public BigDecimal getValorTotal() {
-        return valorTotal;
+    public LocalDateTime getDataCriacao() {
+        return dataCriacao;
     }
 
-    // Getter e Setter para o Pagamento
-    public Pagamento getPagamento() {
-        return pagamento;
+    public LocalDateTime getDataAtualizacao() {
+        return dataAtualizacao;
     }
 
-    public void setPagamento(Pagamento pagamento) {
-        this.pagamento = pagamento;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public void setItens(List<ItemPedido> itens) {
+        this.itens = itens;
+    }
+
+    public void setStatus(PedidoPort.Status status) {
+        this.status = status;
+    }
+
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+        this.dataAtualizacao = dataAtualizacao;
+    }
+
+    public float getTotal() {
+        float total = 0.0f;
+        for (ItemPedido item : itens) {
+            total += item.getProduto().getPreco() * item.getQuantidade();
+        }
+        return total;
     }
 }

@@ -1,4 +1,4 @@
-package core.ports.in;
+package core.ports.inbound;
 
 import core.domain.Pedido;
 
